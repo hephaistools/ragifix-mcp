@@ -25,3 +25,12 @@ packages = ["src/ragifix_mcp"]
 
 [tool.hatch.build.targets.sdist]
 include = ["src/ragifix_mcp", "pyproject.toml", "README.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
