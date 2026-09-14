@@ -144,13 +144,26 @@ des connecteurs/serveurs MCP).
 
 | Outil | Description |
 |---|---|
-| `rag_query(query, top_k=5)` | Recherche les passages les plus pertinents. |
-| `rag_list_documents()` | Liste les documents indexés dans ragifix (sans pagination pour le moment — voir TODO). |
+| `rag_query(query, top_k=5, filters=None)` | Recherche les passages les plus pertinents, filtrable via `filters` (voir "Filtres" ci-dessous). |
+| `rag_list_documents(filters=None)` | Liste les documents indexés dans ragifix, filtrable via `filters` (sans pagination pour le moment — voir TODO). |
 | `rag_get_document(doc_id)` | Détail d'un document. |
 | `rag_list_sources()` | Liste les sources de documents disponibles. |
 | `rag_health()` | Vérifie que `ragifix` est joignable. |
 
 Les résultats de `rag_query`, `rag_get_document` et `rag_list_documents` incluent un champ `metadata` (objet JSON à plat, voir [`ragifix/doc.md`](../ragifix/doc.md)), dont la clé `uri` : le lien ou chemin le plus rapide vers le document source, à citer pour indiquer à l'utilisateur où le trouver.
+
+### Filtres
+
+`filters` est un dict transmis tel quel à l'API `ragifix` (combiné en `AND`) :
+
+| Clé | Type | Sémantique |
+|---|---|---|
+| `source` | `str` ou liste de `str` | Nom de la source configurée (pas le type de connecteur) ; liste = `OR`. |
+| `extension` | `str` ou liste de `str` | Extension du fichier ; liste = `OR`. |
+| `filename_glob` | motif (ex: `*rapport*.pdf`) ou liste de motifs | `OR` entre motifs si liste. |
+| `modified_after` / `modified_before` | `str` (ISO 8601) | Bornes sur la date de modification, valeur unique. |
+
+Exemple : `rag_query(query="politique de télétravail", filters={"source": "sharepoint"})`.
 
 ## Accès distant
 
@@ -183,5 +196,6 @@ les deux cas — le TLS protège le transport, le token protège l'accès.
 
 ## TODO
 
+- [x] exposer des filtres sur `rag_query`/`rag_list_documents` (par source(s), extension(s), motif de nom de fichier, plage de date — voir "Filtres" ci-dessus).
+
 - [ ] ajouter la pagination sur `rag_list_documents` (aujourd'hui, tous les documents sont retournés en une fois).
-- [ ] exposer des filtres sur `rag_query`/`rag_list_documents` (par source(s), par `metadata`) une fois disponibles côté API ragifix.

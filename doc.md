@@ -58,11 +58,17 @@ Chaque outil est documenté avec une description claire pour le LLM :
 
 | Outil | Description |
 |-------|-------------|
-| `rag_query` | Recherche sémantique de passages pertinents |
-| `rag_list_documents` | Lister les documents indexés (avec prefix) |
+| `rag_query` | Recherche sémantique de passages pertinents, filtrable (`filters`) |
+| `rag_list_documents` | Lister les documents indexés, filtrable (`filters`) |
 | `rag_get_document` | Détail d'un document (chunks, métadonnées) |
 | `rag_list_sources` | Lister les sources disponibles |
 | `rag_health` | Vérifier que ragifix est joignable |
+
+`filters` (dict, transmis tel quel à `POST /query`/`GET /documents` côté
+`ragifix`) accepte les clés `source`, `extension`, `filename_glob` (valeur
+unique ou liste, `OR` intra-clé) et `modified_after`/`modified_before`
+(valeur unique), combinées en `AND` — voir
+[`ragifix/doc.md`](../ragifix/doc.md) point 4bis pour le détail.
 
 ### 3. Configuration des instructions
 
@@ -123,7 +129,6 @@ ragifix-mcp --config ./config.yaml
 
 ## Limitations connues
 
-- Pas de filtrage par source dans `rag_query` (TODO)
 - Pas de pagination (TODO)
 - Pas de cache côté serveur
 - Pas de comparaison multi-sources (TODO)

@@ -69,7 +69,7 @@ class ListSourcesToolResult(BaseModel):
 
 def register_tools(mcp: MCPServer, client: RagifixAsyncClient) -> None:
     @mcp.tool()
-    async def rag_query(query: str, top_k: int = 5) -> QueryToolResult:
+    async def rag_query(query: str, top_k: int = 5, filters: dict | None = None) -> QueryToolResult:
         """Recherche les passages les plus pertinents dans la base documentaire ragifix pour une question donnée.
 
         Chaque résultat inclut `metadata`, dont la clé `uri` (lien ou chemin
@@ -79,14 +79,26 @@ def register_tools(mcp: MCPServer, client: RagifixAsyncClient) -> None:
         Args:
             query: La question ou le texte à rechercher.
             top_k: Nombre maximum de résultats à retourner (défaut: 5).
+            filters: Filtres de metadata optionnels, combinés en AND. Clés
+                reconnues : `source` (nom de la source, valeur unique ou
+                liste de valeurs), `extension` (idem), `filename_glob`
+                (motif type `*rapport*.pdf`, valeur unique ou liste),
+                `modified_after`/`modified_before` (bornes ISO 8601 sur la
+                date de modification, valeur unique).
         """
-        raw = await client.query(query, top_k=top_k)
+        raw = await client.query(query, top_k=top_k, filters=filters)
         return QueryToolResult(results=[QueryResultItem(**r) for r in raw["results"]])
 
     @mcp.tool()
-    async def rag_list_documents() -> ListDocumentsToolResult:
-        """Liste les documents actuellement indexés dans ragifix."""
-        documents = await client.list_documents()
+    async def rag_list_documents(filters: dict | None = None) -> ListDocumentsToolResult:
+        """Liste les documents actuellement indexés dans ragifix.
+
+        Args:
+            filters: Filtres de metadata optionnels, combinés en AND. Mêmes
+                clés que pour `rag_query` (`source`, `extension`,
+                `filename_glob`, `modified_after`, `modified_before`).
+        """
+        documents = await client.list_documents(filters=filters)
         return ListDocumentsToolResult(documents=[DocumentInfo(**d) for d in documents])
 
     @mcp.tool()

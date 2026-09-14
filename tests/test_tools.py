@@ -69,6 +69,15 @@ def test_rag_query_default_top_k(fake_mcp, fake_ragifix_client):
     assert client.calls == [("query", "q", 5, None)]
 
 
+def test_rag_query_passes_filters(fake_mcp, fake_ragifix_client):
+    client = fake_ragifix_client()
+    register_tools(fake_mcp, client)
+
+    asyncio.run(fake_mcp.tools["rag_query"](query="q", filters={"source": ["a", "b"]}))
+
+    assert client.calls == [("query", "q", 5, {"source": ["a", "b"]})]
+
+
 # -- rag_list_documents -------------------------------------------------------------
 
 def test_rag_list_documents_maps_documents(fake_mcp, fake_ragifix_client):
@@ -88,7 +97,16 @@ def test_rag_list_documents_maps_documents(fake_mcp, fake_ragifix_client):
 
     assert isinstance(result, ListDocumentsToolResult)
     assert result.documents[0].doc_id == "d1"
-    assert client.calls == [("list_documents",)]
+    assert client.calls == [("list_documents", None)]
+
+
+def test_rag_list_documents_passes_filters(fake_mcp, fake_ragifix_client):
+    client = fake_ragifix_client()
+    register_tools(fake_mcp, client)
+
+    asyncio.run(fake_mcp.tools["rag_list_documents"](filters={"extension": "pdf"}))
+
+    assert client.calls == [("list_documents", {"extension": "pdf"})]
 
 
 # -- rag_get_document ---------------------------------------------------------------

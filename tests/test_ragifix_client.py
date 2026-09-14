@@ -92,6 +92,19 @@ def test_list_documents_returns_documents():
     assert asyncio.run(client.list_documents()) == [{"doc_id": "a"}]
 
 
+def test_list_documents_sends_filters_as_query_params():
+    captured = {}
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["params"] = request.url.params.multi_items()
+        return httpx.Response(200, json={"documents": []})
+
+    client = _client_with_handler(handler)
+    asyncio.run(client.list_documents(filters={"source": ["a", "b"], "extension": "pdf"}))
+
+    assert set(captured["params"]) == {("source", "a"), ("source", "b"), ("extension", "pdf")}
+
+
 # -- health -----------------------------------------------------------------------
 
 def test_health_true_on_200():
