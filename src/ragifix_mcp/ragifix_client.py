@@ -38,9 +38,8 @@ class RagifixAsyncClient:
         response.raise_for_status()
         return response.json()
 
-    async def list_documents(self, prefix: str | None = None) -> list[dict]:
-        params = {"prefix": prefix} if prefix else None
-        response = await self._client.get("/documents", params=params)
+    async def list_documents(self) -> list[dict]:
+        response = await self._client.get("/documents")
         response.raise_for_status()
         return response.json()["documents"]
 

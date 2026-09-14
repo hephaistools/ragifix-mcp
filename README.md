@@ -145,13 +145,12 @@ des connecteurs/serveurs MCP).
 | Outil | Description |
 |---|---|
 | `rag_query(query, top_k=5)` | Recherche les passages les plus pertinents. |
-| `rag_list_documents(prefix=None)` | Liste les documents indexés dans ragifix. |
+| `rag_list_documents()` | Liste les documents indexés dans ragifix (sans pagination pour le moment — voir TODO). |
 | `rag_get_document(doc_id)` | Détail d'un document. |
-| `rag_add_document(doc_id, content, extension, content_encoding="utf8", metadata=None)` | Ajoute/met à jour un document (`content_encoding`: `"utf8"` pour du texte brut, `"base64"` pour du contenu binaire — pdf/docx/pptx/xlsx/html). |
-| `rag_delete_document(doc_id)` | Supprime un document (idempotent). |
+| `rag_list_sources()` | Liste les sources de documents disponibles. |
 | `rag_health()` | Vérifie que `ragifix` est joignable. |
 
-Les résultats de `rag_query`, `rag_get_document` et `rag_list_documents` incluent un champ `origin` (`{kind, uri, label}` ou `null`) : le lien ou chemin le plus rapide vers le document source, à citer pour indiquer à l'utilisateur où le trouver.
+Les résultats de `rag_query`, `rag_get_document` et `rag_list_documents` incluent un champ `metadata` (objet JSON à plat, voir [`ragifix/doc.md`](../ragifix/doc.md)), dont la clé `uri` : le lien ou chemin le plus rapide vers le document source, à citer pour indiquer à l'utilisateur où le trouver.
 
 ## Accès distant
 
@@ -181,3 +180,8 @@ Pour un client de chat distant, deux changements sont nécessaires :
 
 Le token dédié (`RAGIFIX_MCP_TOKEN`) reste la protection applicative dans
 les deux cas — le TLS protège le transport, le token protège l'accès.
+
+## TODO
+
+- [ ] ajouter la pagination sur `rag_list_documents` (aujourd'hui, tous les documents sont retournés en une fois).
+- [ ] exposer des filtres sur `rag_query`/`rag_list_documents` (par source(s), par `metadata`) une fois disponibles côté API ragifix.

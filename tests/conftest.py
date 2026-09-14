@@ -87,8 +87,8 @@ class FakeRagifixAsyncClient:
         self.calls.append(("query", query, top_k, filters))
         return self.query_result
 
-    async def list_documents(self, prefix=None):
-        self.calls.append(("list_documents", prefix))
+    async def list_documents(self):
+        self.calls.append(("list_documents",))
         return self.documents
 
     async def get_document(self, doc_id):

@@ -83,25 +83,13 @@ def test_get_document_other_error_raises():
 
 # -- list_documents -----------------------------------------------------------------
 
-def test_list_documents_without_prefix():
+def test_list_documents_returns_documents():
     def handler(request: httpx.Request) -> httpx.Response:
-        assert "prefix" not in dict(request.url.params)
+        assert dict(request.url.params) == {}
         return httpx.Response(200, json={"documents": [{"doc_id": "a"}]})
 
     client = _client_with_handler(handler)
     assert asyncio.run(client.list_documents()) == [{"doc_id": "a"}]
-
-
-def test_list_documents_with_prefix():
-    captured = {}
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        captured["prefix"] = dict(request.url.params).get("prefix")
-        return httpx.Response(200, json={"documents": []})
-
-    client = _client_with_handler(handler)
-    asyncio.run(client.list_documents(prefix="notes/"))
-    assert captured["prefix"] == "notes/"
 
 
 # -- health -----------------------------------------------------------------------

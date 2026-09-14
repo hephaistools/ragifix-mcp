@@ -44,8 +44,7 @@ def test_rag_query_maps_results(fake_mcp, fake_ragifix_client):
                     "doc_id": "d1",
                     "text": "texte",
                     "score": 0.9,
-                    "metadata": {},
-                    "origin": {"kind": "file", "uri": "file:///a.txt", "label": "a.txt"},
+                    "metadata": {"uri": "file:///a.txt"},
                 }
             ]
         }
@@ -57,7 +56,7 @@ def test_rag_query_maps_results(fake_mcp, fake_ragifix_client):
     assert isinstance(result, QueryToolResult)
     assert len(result.results) == 1
     assert result.results[0].chunk_id == "c1"
-    assert result.results[0].origin.kind == "file"
+    assert result.results[0].metadata["uri"] == "file:///a.txt"
     assert client.calls == [("query", "question", 3, None)]
 
 
@@ -70,20 +69,6 @@ def test_rag_query_default_top_k(fake_mcp, fake_ragifix_client):
     assert client.calls == [("query", "q", 5, None)]
 
 
-def test_rag_query_without_origin(fake_mcp, fake_ragifix_client):
-    client = fake_ragifix_client(
-        query_result={
-            "results": [
-                {"chunk_id": "c1", "doc_id": "d1", "text": "t", "score": 0.5, "metadata": {}}
-            ]
-        }
-    )
-    register_tools(fake_mcp, client)
-
-    result = asyncio.run(fake_mcp.tools["rag_query"](query="q"))
-    assert result.results[0].origin is None
-
-
 # -- rag_list_documents -------------------------------------------------------------
 
 def test_rag_list_documents_maps_documents(fake_mcp, fake_ragifix_client):
@@ -91,9 +76,8 @@ def test_rag_list_documents_maps_documents(fake_mcp, fake_ragifix_client):
         documents=[
             {
                 "doc_id": "d1",
-                "extension": "txt",
                 "chunk_count": 2,
-                "metadata": {},
+                "metadata": {"extension": "txt"},
                 "updated_at": "2026-01-01T00:00:00Z",
             }
         ]
@@ -104,16 +88,7 @@ def test_rag_list_documents_maps_documents(fake_mcp, fake_ragifix_client):
 
     assert isinstance(result, ListDocumentsToolResult)
     assert result.documents[0].doc_id == "d1"
-    assert client.calls == [("list_documents", None)]
-
-
-def test_rag_list_documents_passes_prefix(fake_mcp, fake_ragifix_client):
-    client = fake_ragifix_client(documents=[])
-    register_tools(fake_mcp, client)
-
-    asyncio.run(fake_mcp.tools["rag_list_documents"](prefix="notes/"))
-
-    assert client.calls == [("list_documents", "notes/")]
+    assert client.calls == [("list_documents",)]
 
 
 # -- rag_get_document ---------------------------------------------------------------
@@ -122,9 +97,8 @@ def test_rag_get_document_found(fake_mcp, fake_ragifix_client):
     client = fake_ragifix_client(
         get_document_result={
             "doc_id": "d1",
-            "extension": "txt",
             "chunk_count": 1,
-            "metadata": {},
+            "metadata": {"extension": "txt"},
             "updated_at": "2026-01-01T00:00:00Z",
         }
     )
