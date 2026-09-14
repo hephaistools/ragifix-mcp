@@ -5,4 +5,4 @@ Claude.ai, etc.) directement sur une base ragifix, via des outils de
 recherche, d'ajout, de suppression et de listing de documents.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.3.0"

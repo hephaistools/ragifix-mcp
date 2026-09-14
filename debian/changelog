@@ -1,3 +1,12 @@
+ragifix-mcp (0.3.0-1) unstable; urgency=medium
+
+  * Exposition des filtres de metadata sur rag_query et rag_list_documents
+    (source, extension, filename_glob, plage de dates).
+  * Numérotation alignée avec ragifix et ragifix-collector (versions
+    dépendantes entre elles) — saut volontaire depuis 0.2.0.
+
+ -- Ragifix Maintainers <ragifix@example.com>  Mon, 14 Sep 2026 17:34:00 +0000
+
 ragifix-mcp (0.1.0-2) unstable; urgency=medium
 
   * Ajout des pipelines CI (gate pytest, y compris sur push vers dev) et

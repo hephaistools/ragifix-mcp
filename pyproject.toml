@@ -1,6 +1,6 @@
 [project]
 name = "ragifix-mcp"
-version = "0.1.0"
+version = "0.3.0"
 description = "Serveur MCP (Model Context Protocol) exposant une base ragifix à un client de chat compatible."
 requires-python = ">=3.11"
 license = { text = "Proprietary" }
