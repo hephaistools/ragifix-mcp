@@ -1,11 +1,13 @@
-ragifix-mcp (0.3.0-1) unstable; urgency=medium
+ragifix-mcp (0.3.0) unstable; urgency=medium
 
   * Exposition des filtres de metadata sur rag_query et rag_list_documents
     (source, extension, filename_glob, plage de dates).
+  * Retrait du champ de réponse origin et du filtre prefix. Le lien vers
+    le document source est metadata.uri.
   * Numérotation alignée avec ragifix et ragifix-collector (versions
-    dépendantes entre elles) — saut volontaire depuis 0.2.0.
+    dépendantes entre elles) — saut volontaire depuis 0.1.0.
 
- -- Ragifix Maintainers <ragifix@example.com>  Mon, 14 Sep 2026 17:34:00 +0000
+ -- Ragifix Maintainers <ragifix@example.com>  Tue, 22 Sep 2026 15:34:00 +0000
 
 ragifix-mcp (0.1.0-2) unstable; urgency=medium
 
